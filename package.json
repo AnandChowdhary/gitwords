@@ -6,7 +6,7 @@
   "author": "Anand Chowdhary <mail@anandchowdhary.com>",
   "license": "MIT",
   "scripts": {
-    "local": "now dev",
+    "local": "concurrently 'npm run start' 'now dev'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -15,7 +15,8 @@
   "devDependencies": {
     "@now/node": "^1.2.0",
     "@types/bcrypt": "^3.0.0",
-    "@types/jsonwebtoken": "^8.3.7"
+    "@types/jsonwebtoken": "^8.3.7",
+    "concurrently": "^5.1.0"
   },
   "dependencies": {
     "@octokit/rest": "^16.43.1",
