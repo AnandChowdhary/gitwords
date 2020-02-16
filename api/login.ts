@@ -17,9 +17,7 @@ export default async (req: NowRequest, res: NowResponse) => {
           expiresIn: JWT_EXPIRY
         })
       });
-    return res
-      .status(401)
-      .json({ error: "invalid password", password, correctPassword });
+    return res.status(401).json({ error: "invalid password" });
   } catch (error) {
     res.status(500);
     console.error(error);

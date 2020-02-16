@@ -27,6 +27,7 @@ export default async (req: NowRequest, res: NowResponse) => {
       content,
       sha
     });
+    return res.json({ success: true });
   } catch (error) {
     console.error(error);
     res.status(500);
