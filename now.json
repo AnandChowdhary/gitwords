@@ -1,5 +1,17 @@
 {
   "env": {
     "FINDING_ANAND_ACCESS_TOKEN": "@finding_anand_access_token"
-  }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/ok",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+      },
+      "methods": ["OPTIONS"]
+    }
+  ]
 }
