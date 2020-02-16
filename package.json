@@ -8,9 +8,11 @@
     "local": "now dev"
   },
   "devDependencies": {
-    "@now/node": "^1.2.0"
+    "@now/node": "^1.2.0",
+    "@types/bcrypt": "^3.0.0"
   },
   "dependencies": {
-    "@octokit/rest": "^16.43.1"
+    "@octokit/rest": "^16.43.1",
+    "bcrypt": "^3.0.8"
   }
 }
