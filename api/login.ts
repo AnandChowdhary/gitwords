@@ -1,26 +1,19 @@
 import { NowRequest, NowResponse } from "@now/node";
-import { github } from "../common/octokit";
-import { OWNER, REPO, PASSWORD_PATH, SALT_ROUNDS } from "../common/config";
 import { compare } from "bcrypt";
+import { sign } from "jsonwebtoken";
+import { getPassword, getSecret } from "../common/secrets";
 
 export default async (req: NowRequest, res: NowResponse) => {
   const password = req.body.password;
+  delete req.body.password;
   try {
-    const correctPassword = Buffer.from(
-      ((
-        await github.repos.getContents({
-          owner: OWNER,
-          repo: REPO,
-          path: PASSWORD_PATH
-        })
-      ).data as any).content,
-      "base64"
-    )
-      .toString("utf8")
-      .replace(/\r?\n|\r/, "")
-      .trim();
+    const correctPassword = await getPassword();
     const check = await compare(password, correctPassword);
-    if (check) return res.json({ success: true });
+    if (check)
+      return res.json({
+        success: true,
+        token: sign(req.body, await getSecret())
+      });
     return res
       .status(401)
       .json({ error: "invalid password", password, correctPassword });
