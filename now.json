@@ -1,0 +1,6 @@
+{
+  "env": {
+    "GITWORDS_CLIENT_ID": "@gitwords_client_id",
+    "GITWORDS_CLIENT_SECRET": "@gitwords_client_secret"
+  }
+}
