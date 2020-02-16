@@ -1,6 +1,5 @@
 {
   "env": {
-    "GITWORDS_CLIENT_ID": "@gitwords_client_id",
-    "GITWORDS_CLIENT_SECRET": "@gitwords_client_secret"
+    "FINDING_ANAND_ACCESS_TOKEN": "@finding_anand_access_token"
   }
 }
