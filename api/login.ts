@@ -2,6 +2,7 @@ import { NowRequest, NowResponse } from "@now/node";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { getPassword, getSecret } from "../common/secrets";
+import { JWT_EXPIRY } from "../common/config";
 
 export default async (req: NowRequest, res: NowResponse) => {
   const password = req.body.password;
@@ -12,7 +13,9 @@ export default async (req: NowRequest, res: NowResponse) => {
     if (check)
       return res.json({
         success: true,
-        token: sign(req.body, await getSecret())
+        token: sign(req.body, await getSecret(), {
+          expiresIn: JWT_EXPIRY
+        })
       });
     return res
       .status(401)
