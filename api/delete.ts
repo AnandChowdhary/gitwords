@@ -8,15 +8,12 @@ export default async (req: NowRequest, res: NowResponse) => {
     return res.status(401).json({ error: "invalid token" });
   const path = req.query.path;
   if (typeof path !== "string" || !path) throw new Error("path not provided");
-  let sha: string | undefined = undefined;
   try {
-    sha = ((await github.repos.getContents({
+    const sha: string = ((await github.repos.getContents({
       owner: OWNER,
       repo: REPO,
       path
     })) as any).sha;
-  } catch (error) {}
-  try {
     await github.repos.deleteFile({
       owner: OWNER,
       repo: REPO,
