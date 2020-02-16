@@ -24,6 +24,7 @@ export default async (req: NowRequest, res: NowResponse) => {
       path,
       sha
     });
+    return res.json({ success: true });
   } catch (error) {
     res.status(500);
     console.error(error);
