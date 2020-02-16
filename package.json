@@ -9,10 +9,12 @@
   },
   "devDependencies": {
     "@now/node": "^1.2.0",
-    "@types/bcrypt": "^3.0.0"
+    "@types/bcrypt": "^3.0.0",
+    "@types/jsonwebtoken": "^8.3.7"
   },
   "dependencies": {
     "@octokit/rest": "^16.43.1",
-    "bcrypt": "^3.0.8"
+    "bcrypt": "^3.0.8",
+    "jsonwebtoken": "^8.5.1"
   }
 }
