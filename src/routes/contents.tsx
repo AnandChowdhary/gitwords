@@ -34,15 +34,12 @@ export default () => {
     const path = pathname.replace("/contents", "") || "";
     try {
       const result = await (
-        await fetch(
-          `https://cors-anywhere.herokuapp.com/https://gitwords.now.sh/api/contents/?path=${path}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`
-            }
+        await fetch(`https://gitwords.now.sh/api/contents/?path=${path}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           }
-        )
+        })
       ).json();
       if (Array.isArray(result)) {
         setFiles(result);

@@ -8,18 +8,15 @@ export default () => {
   const login = async (event: FormEvent) => {
     event.preventDefault();
     const result: { token: string } = await (
-      await fetch(
-        "https://cors-anywhere.herokuapp.com/https://gitwords.now.sh/api/login",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            password
-          }),
-          headers: {
-            "Content-Type": "application/json"
-          }
+      await fetch("https://gitwords.now.sh/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          password
+        }),
+        headers: {
+          "Content-Type": "application/json"
         }
-      )
+      })
     ).json();
     setToken(result.token);
   };
