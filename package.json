@@ -1,0 +1,13 @@
+{
+  "name": "gitwords",
+  "version": "1.0.0",
+  "repository": "git@github.com:AnandChowdhary/gitwords.git",
+  "author": "Anand Chowdhary <mail@anandchowdhary.com>",
+  "license": "MIT",
+  "scripts": {
+    "local": "now dev"
+  },
+  "devDependencies": {
+    "@now/node": "^1.2.0"
+  }
+}
