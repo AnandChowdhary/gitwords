@@ -1,1 +1,2 @@
-export const REPO = "AnandChowdhary/writing-private";
+export const OWNER = "AnandChowdhary";
+export const REPO = "writing-private";
