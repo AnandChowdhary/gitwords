@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createRef } from "react";
 import { Redirect, useLocation, Link, useHistory } from "react-router-dom";
 import {
   useDispatch,
@@ -7,6 +7,8 @@ import {
 } from "react-redux";
 import { RootState } from "../store";
 import { Button, Layout, Spin, Menu, Modal, Input, Icon, Alert } from "antd";
+import ContentEditable from "react-contenteditable";
+
 const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -31,6 +33,7 @@ export default () => {
   const [loading, setLoading] = useState(false);
   const [createNew, setCreateNew] = useState(false);
   const { pathname } = useLocation();
+  const contentEditableRef = createRef<HTMLElement>();
   const logout = () => {
     dispatch({
       type: "UNSET"
@@ -181,7 +184,11 @@ export default () => {
                 style={{ marginBottom: 20 }}
               />
             ) : (
-              value
+              <ContentEditable
+                innerRef={contentEditableRef}
+                html={value}
+                onChange={e => setValue(e.target.value)}
+              />
             )}
           </Content>
           <Footer>Footer</Footer>
