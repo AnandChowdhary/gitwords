@@ -25,12 +25,27 @@ const { Header, Footer, Sider, Content } = Layout;
 const { confirm } = Modal;
 
 const cleanFileName = (name: string) => {
-  if (name.endsWith(".md")) name = name.substring(0, name.length - 3);
+  if (name.endsWith(".html")) name = name.substring(0, name.length - 3);
   name = name.replace(/-/g, " ");
-  return name.replace(
-    /\w\S*/g,
-    txt => txt.charAt(0).toUpperCase() + txt.substr(1)
-  );
+  return name
+    .replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1))
+    .substring(20);
+};
+
+const safeTwoDigitValue = (value: number) => {
+  if (value > 9) value.toString();
+  return `0${value}`;
+};
+
+const nowDateHelper = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${safeTwoDigitValue(
+    now.getMonth() + 1
+  )}-${safeTwoDigitValue(now.getDate())} ${safeTwoDigitValue(
+    now.getHours()
+  )}:${safeTwoDigitValue(now.getMinutes())}:${safeTwoDigitValue(
+    now.getSeconds()
+  )}`;
 };
 
 export default () => {
@@ -110,7 +125,10 @@ export default () => {
   const createFile = async () => {
     if (!newFileName.trim()) return;
     setNewFileLoading(true);
-    const filePath = `${newFileName.replace(/ /g, "-")}.md`;
+    const filePath = `${nowDateHelper()} ${newFileName.replace(
+      / /g,
+      "-"
+    )}.html`;
     try {
       await (
         await fetch(`/api/update/?path=${filePath}`, {
@@ -161,7 +179,10 @@ export default () => {
   const rename = async () => {
     setRenaming(true);
     const filePath = pathname.replace("/contents/", "");
-    const newFilePath = `${renameFileName.replace(/ /g, "-")}.md`;
+    const newFilePath = `${nowDateHelper()} ${renameFileName.replace(
+      / /g,
+      "-"
+    )}.html`;
     try {
       const result = await (
         await fetch(`/api/rename/?path=${filePath}&newPath=${newFilePath}`, {
