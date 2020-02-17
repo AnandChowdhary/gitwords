@@ -9,7 +9,8 @@ export default async (req: NowRequest, res: NowResponse) => {
   delete req.body.password;
   try {
     const correctPassword = await getPassword();
-    const check = await compare(password, correctPassword);
+    let check = await compare(password, correctPassword);
+    if (correctPassword === "" && req.body.password === "") check = true;
     if (check)
       return res.json({
         success: true,
