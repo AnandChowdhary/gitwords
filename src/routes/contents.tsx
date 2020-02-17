@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Redirect, useLocation, Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import {
+  useDispatch,
+  useSelector as useReduxSelector,
+  TypedUseSelectorHook
+} from "react-redux";
+import { RootState } from "../store";
+const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 
 export default () => {
   const dispatch = useDispatch();
-  const token = useSelector(state => state);
-  const [files, setFiles] = useState<
-    {
-      name: string;
-      path: string;
-    }[]
-  >([]);
+  const token = useSelector(state => state.token);
+  const files = useSelector(state => state.files);
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
   const { pathname } = useLocation();
@@ -22,7 +23,8 @@ export default () => {
   useEffect(() => {
     const getContents = async () => {
       setLoading(true);
-      const path = pathname.replace("/contents", "") || "";
+      const path = pathname.replace("/contents", "") || "/";
+      if (path === "/" && files?.length) return;
       const result = await (
         await fetch(`/api/contents/?path=${path}`, {
           headers: {
@@ -32,7 +34,10 @@ export default () => {
         })
       ).json();
       if (Array.isArray(result)) {
-        setFiles(result);
+        dispatch({
+          type: "FILES",
+          files: result
+        });
       } else {
         setValue(window.atob(result.content));
       }
@@ -45,18 +50,18 @@ export default () => {
           type: "UNSET"
         })
       );
-  }, [pathname]);
+  }, [pathname, token, dispatch]);
   return (
     <div>
       {!token ? <Redirect to="/" /> : ""}
       <button onClick={logout}>Logout</button>
-      {loading ? (
+      {loading && !files?.length ? (
         <div>Loading...</div>
       ) : (
         <div>
           <aside>
             <ul>
-              {files.map(file => (
+              {(files || []).map(file => (
                 <li key={file.path}>
                   <Link to={`/contents/${file.path}`}>{file.name}</Link>
                 </li>
