@@ -6,6 +6,8 @@ import {
   TypedUseSelectorHook
 } from "react-redux";
 import { RootState } from "../store";
+import { Card, Form, Icon, Input, Button, Alert } from "antd";
+
 const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 
 export default () => {
@@ -38,22 +40,53 @@ export default () => {
       setError(true);
     }
     if (!token) setError(true);
+    setPassword("");
     setLoading(false);
   };
   return (
     <div>
-      {token}
       {token ? <Redirect to="/contents" /> : ""}
-      <h1>Login</h1>
-      {loading ? <p>Loading...</p> : ""}
-      {error ? <p>We weren't able to log you in.</p> : ""}
-      <form onSubmit={login}>
-        <label>
-          <span>Password</span>
-          <input type="password" onChange={e => setPassword(e.target.value)} />
-        </label>
-        <button type="submit">Login</button>
-      </form>
+      <div
+        style={{ background: "#ECECEC", padding: "25vh 0", minHeight: "100vh" }}
+      >
+        <div style={{ width: 300, margin: "auto" }}>
+          {error ? (
+            <Alert
+              message="Invalid password"
+              description="We weren't able to log you into Words, please double check your password."
+              type="error"
+              closable
+              onClose={() => setError(false)}
+              style={{ marginBottom: 20 }}
+            />
+          ) : (
+            ""
+          )}
+          <Card title="Log into Words" bordered={false}>
+            <Form onSubmit={login} className="login-form">
+              <Input
+                prefix={
+                  <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                className="login-form-button"
+                style={{ marginTop: 20 }}
+                block
+              >
+                Login
+              </Button>
+            </Form>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
