@@ -22,6 +22,7 @@ import ContentEditable from "react-contenteditable";
 
 const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 const { Header, Footer, Sider, Content } = Layout;
+const { confirm } = Modal;
 
 const cleanFileName = (name: string) => {
   if (name.endsWith(".md")) name = name.substring(0, name.length - 3);
@@ -40,9 +41,11 @@ export default () => {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [newFileName, setNewFileName] = useState("");
+  const [renameFileName, setRenameFileName] = useState("");
   const [newFileLoading, setNewFileLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [createNew, setCreateNew] = useState(false);
+  const [renameModal, setRenameModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -128,6 +131,24 @@ export default () => {
   };
   const deletePost = async () => {
     setDeleting(true);
+    const filePath = pathname.replace("/contents/", "");
+    try {
+      const result = await (
+        await fetch(`/api/delete/?path=${filePath}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ).json();
+      if (result) {
+        history.push(`/contents`);
+        message.success("Deleted");
+      }
+    } catch (error) {
+      setError("We weren't able to create a new file");
+    }
+    setDeleting(false);
   };
   const save = async () => {
     setSaving(true);
@@ -171,6 +192,21 @@ export default () => {
           placeholder="Title"
           value={newFileName}
           onChange={e => setNewFileName(e.target.value)}
+        />
+      </Modal>
+      <Modal
+        title="Rename"
+        visible={renameModal}
+        onOk={rename}
+        onCancel={() => setRenameModal(false)}
+        confirmLoading={renaming}
+      >
+        <Input
+          prefix={<Icon type="file-add" style={{ color: "rgba(0,0,0,.25)" }} />}
+          type="text"
+          placeholder="New post title"
+          value={renameFileName}
+          onChange={e => setRenameFileName(e.target.value)}
         />
       </Modal>
       <Layout style={{ minHeight: "100vh" }}>
@@ -220,11 +256,30 @@ export default () => {
                 <Dropdown
                   overlay={
                     <Menu>
-                      <Menu.Item key="post-rename" onClick={rename}>
+                      <Menu.Item
+                        key="post-rename"
+                        onClick={() => setRenameModal(true)}
+                      >
                         <Icon type="edit" />
                         Rename
                       </Menu.Item>
-                      <Menu.Item key="post-delete" onClick={deletePost}>
+                      <Menu.Item
+                        key="post-delete"
+                        onClick={() =>
+                          confirm({
+                            title: "Are you sure delete this post?",
+                            content:
+                              "Deleting a post is not reversible (you'll have to find it in the git history)",
+                            okText: "Yes, delete it",
+                            okType: "danger",
+                            cancelText: "No, keep it",
+                            onOk() {
+                              deletePost();
+                            },
+                            onCancel() {}
+                          })
+                        }
+                      >
                         <Icon type="delete" />
                         Delete
                       </Menu.Item>
@@ -280,6 +335,8 @@ export default () => {
                 onClose={() => setError("")}
                 style={{ marginBottom: 20 }}
               />
+            ) : deleting ? (
+              <Alert message="Deleting your post..." type="info" showIcon />
             ) : (
               <ContentEditable
                 className="editor"
