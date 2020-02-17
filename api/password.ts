@@ -1,8 +1,14 @@
 import { NowRequest, NowResponse } from "@now/node";
 import { github } from "../common/octokit";
-import { OWNER, REPO, PASSWORD_PATH, UPDATE_MESSAGE } from "../common/config";
+import {
+  OWNER,
+  REPO,
+  PASSWORD_PATH,
+  UPDATE_MESSAGE,
+  SALT_ROUNDS
+} from "../common/config";
 import { verifyToken, getPassword } from "../common/secrets";
-import { compare } from "bcrypt";
+import { compare, hash } from "bcrypt";
 
 export default async (req: NowRequest, res: NowResponse) => {
   if (!(await verifyToken(req)))
@@ -18,7 +24,9 @@ export default async (req: NowRequest, res: NowResponse) => {
         repo: REPO,
         path: PASSWORD_PATH
       })) as any).data.sha;
-      const content = Buffer.from(newPassword).toString("base64");
+      const content = Buffer.from(
+        await hash(newPassword, SALT_ROUNDS)
+      ).toString("base64");
       await github.repos.createOrUpdateFile({
         owner: OWNER,
         repo: REPO,
