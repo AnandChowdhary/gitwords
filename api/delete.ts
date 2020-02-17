@@ -13,7 +13,7 @@ export default async (req: NowRequest, res: NowResponse) => {
       owner: OWNER,
       repo: REPO,
       path
-    })) as any).sha;
+    })) as any).data.sha;
     await github.repos.deleteFile({
       owner: OWNER,
       repo: REPO,

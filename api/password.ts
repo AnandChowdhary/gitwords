@@ -17,7 +17,7 @@ export default async (req: NowRequest, res: NowResponse) => {
         owner: OWNER,
         repo: REPO,
         path: PASSWORD_PATH
-      })) as any).sha;
+      })) as any).data.sha;
       const content = Buffer.from(newPassword).toString("base64");
       await github.repos.createOrUpdateFile({
         owner: OWNER,

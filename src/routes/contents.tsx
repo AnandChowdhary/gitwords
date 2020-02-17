@@ -6,7 +6,17 @@ import {
   TypedUseSelectorHook
 } from "react-redux";
 import { RootState } from "../store";
-import { Button, Layout, Spin, Menu, Modal, Input, Icon, Alert } from "antd";
+import {
+  message,
+  Button,
+  Layout,
+  Spin,
+  Menu,
+  Modal,
+  Input,
+  Icon,
+  Alert
+} from "antd";
 import ContentEditable from "react-contenteditable";
 
 const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
@@ -32,6 +42,8 @@ export default () => {
   const [newFileLoading, setNewFileLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [createNew, setCreateNew] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const { pathname } = useLocation();
   const contentEditableRef = createRef<HTMLElement>();
   const logout = () => {
@@ -87,6 +99,7 @@ export default () => {
     });
   };
   const createFile = async () => {
+    if (!newFileName.trim()) return;
     setNewFileLoading(true);
     const filePath = `${newFileName.replace(/ /g, "-")}.md`;
     try {
@@ -107,6 +120,31 @@ export default () => {
       setError("We weren't able to create a new file");
     }
     setCreateNew(false);
+  };
+  const rename = async () => {
+    setRenaming(true);
+  };
+  const save = async () => {
+    setSaving(true);
+    const filePath = pathname.replace("/contents/", "");
+    try {
+      const result = await (
+        await fetch(`/api/update/?path=${filePath}`, {
+          method: "POST",
+          body: JSON.stringify({
+            content: value
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ).json();
+      if (result) message.success("Saved");
+    } catch (error) {
+      setError("We weren't able to create a new file");
+    }
+    setSaving(false);
   };
   return (
     <div>
@@ -168,6 +206,18 @@ export default () => {
             <Button type="default" onClick={logout}>
               Logout
             </Button>
+            {(pathname.replace("/contents", "") || "/") !== "/" ? (
+              <span>
+                <Button type="default" loading={renaming} onClick={rename}>
+                  Rename
+                </Button>
+                <Button type="primary" loading={saving} onClick={save}>
+                  Save
+                </Button>
+              </span>
+            ) : (
+              ""
+            )}
           </Header>
           <Content style={{ width: "720px", margin: "40px auto" }}>
             {loading ? (
@@ -185,6 +235,7 @@ export default () => {
               />
             ) : (
               <ContentEditable
+                className="editor"
                 innerRef={contentEditableRef}
                 html={value}
                 onChange={e => setValue(e.target.value)}

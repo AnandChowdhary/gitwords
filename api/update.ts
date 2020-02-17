@@ -16,7 +16,7 @@ export default async (req: NowRequest, res: NowResponse) => {
       owner: OWNER,
       repo: REPO,
       path
-    })) as any).sha;
+    })) as any).data.sha;
   } catch (error) {}
   try {
     await github.repos.createOrUpdateFile({
