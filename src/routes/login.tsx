@@ -8,22 +8,21 @@ export default () => {
   const token = useSelector(state => state);
   const login = async (event: FormEvent) => {
     event.preventDefault();
+    const result: { token: string } = await (
+      await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          password
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+    ).json();
     dispatch({
       type: "SET",
-      token: "anand"
+      token: result.token
     });
-    //   const result: { token: string } = await (
-    //     await fetch("https://gitwords.now.sh/api/login", {
-    //       method: "POST",
-    //       body: JSON.stringify({
-    //         password
-    //       }),
-    //       headers: {
-    //         "Content-Type": "application/json"
-    //       }
-    //     })
-    //   ).json();
-    //   setToken(result.token);
   };
   return (
     <div>

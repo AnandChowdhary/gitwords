@@ -14,4 +14,13 @@ const tokenStore = (
   }
 };
 
-export const store = createStore(tokenStore);
+const LOCAL_KEY = "gitwordsToken";
+const localStore = localStorage.getItem(LOCAL_KEY);
+const persistedState = localStore ? JSON.parse(localStore) : null;
+
+const store = createStore(tokenStore, persistedState);
+store.subscribe(() => {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(store.getState()));
+});
+
+export { store };

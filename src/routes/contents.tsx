@@ -3,7 +3,7 @@ import { Redirect, useLocation, Link } from "react-router-dom";
 import ReactMde from "react-mde";
 import Showdown from "showdown";
 import "react-mde/lib/styles/css/react-mde-all.css";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const converter = new Showdown.Converter({
   tables: true,
@@ -13,6 +13,7 @@ const converter = new Showdown.Converter({
 });
 
 export default () => {
+  const dispatch = useDispatch();
   const token = useSelector(state => state);
   const [files, setFiles] = useState<
     {
@@ -25,7 +26,6 @@ export default () => {
     "write"
   );
   const location = useLocation();
-  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const { pathname } = useLocation();
   const getContents = async () => {
@@ -33,7 +33,7 @@ export default () => {
     const path = pathname.replace("/contents", "") || "";
     try {
       const result = await (
-        await fetch(`https://gitwords.now.sh/api/contents/?path=${path}`, {
+        await fetch(`/api/contents/?path=${path}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`
@@ -47,17 +47,19 @@ export default () => {
       }
       setLoading(false);
     } catch (error) {
-      localStorage.removeItem("token");
-      setError(true);
+      dispatch({
+        type: "UNSET"
+      });
+      console.log("Error, logging you out");
     }
   };
   useEffect(() => {
-    // getContents();
+    getContents();
   }, [location]);
   const decode = (text?: string) => (text ? window.atob(text) : "");
   return (
     <div>
-      {!token || error ? <Redirect to="/" /> : ""}
+      {!token ? <Redirect to="/" /> : ""}
       {loading ? (
         <div>Loading...</div>
       ) : (
