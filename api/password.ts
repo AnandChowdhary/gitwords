@@ -17,7 +17,8 @@ export default async (req: NowRequest, res: NowResponse) => {
   const newPassword = req.body.newPassword;
   try {
     const truePassword = await getPassword();
-    const check = await compare(currentPassword, truePassword);
+    let check = await compare(currentPassword, truePassword);
+    if (!currentPassword && !truePassword) check = true;
     if (check) {
       const sha = ((await github.repos.getContents({
         owner: OWNER,
