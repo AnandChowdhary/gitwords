@@ -12,3 +12,19 @@
 .editor:focus {
   outline: none;
 }
+
+.editor {
+  font-size: 125%;
+  line-height: 1.75;
+}
+
+p.lead {
+  font-size: 200%;
+}
+p.lead + p {
+  font-size: 125%;
+}
+
+ul li:not(:first-child) {
+  margin-top: 0.25rem;
+}

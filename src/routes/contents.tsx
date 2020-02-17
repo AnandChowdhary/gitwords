@@ -310,6 +310,7 @@ export default () => {
           placeholder="New password"
           value={newPassword}
           onChange={e => setNewPassword(e.target.value)}
+          style={{ marginTop: 20 }}
         />
       </Modal>
       <Layout style={{ minHeight: "100vh" }}>
@@ -443,6 +444,61 @@ export default () => {
               />
             ) : deleting ? (
               <Alert message="Deleting your post..." type="info" showIcon />
+            ) : (pathname.replace("/contents", "") || "/") === "/" ? (
+              <div>
+                <p className="lead">
+                  Words is a place to <em>just write</em>.
+                </p>
+                <p>
+                  To get started, select a post from the sidebar on the left, or
+                  click on the "New" button above to create a new post.
+                </p>
+                <p>
+                  This app is{" "}
+                  <a href="https://github.com/AnandChowdhary/gitwords">
+                    open sourced on GitHub
+                  </a>
+                  , but uses your private repository to store your content.
+                  Running on ZEIT. If you have any questions or need help,
+                  please write to{" "}
+                  <a href="mailto:words@mail.anandchowdhary.com">
+                    words@mail.anandchowdhary.com
+                  </a>
+                  .
+                </p>
+                <ul>
+                  <li>
+                    <span role="img" aria-label="">
+                      🔒
+                    </span>{" "}
+                    All your content, secured in a private repository
+                  </li>
+                  <li>
+                    <span role="img" aria-label="">
+                      ⛅
+                    </span>{" "}
+                    Git-based version control and ZIP backups
+                  </li>
+                  <li>
+                    <span role="img" aria-label="">
+                      🔑
+                    </span>{" "}
+                    Encrypted file storage (coming soon)
+                  </li>
+                  <li>
+                    <span role="img" aria-label="">
+                      📁
+                    </span>{" "}
+                    Local backup so you never lose your work (coming soon)
+                  </li>
+                  <li>
+                    <span role="img" aria-label="">
+                      💸
+                    </span>{" "}
+                    Free and open-source for the world
+                  </li>
+                </ul>
+              </div>
             ) : (
               <ContentEditable
                 className="editor"
