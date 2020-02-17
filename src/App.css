@@ -28,3 +28,11 @@ p.lead + p {
 ul li:not(:first-child) {
   margin-top: 0.25rem;
 }
+
+h1 {
+  font-size: 200%;
+}
+h1 + div {
+  font-size: 120%;
+  margin-bottom: 40px;
+}

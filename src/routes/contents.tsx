@@ -23,13 +23,16 @@ import ContentEditable from "react-contenteditable";
 const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 const { Header, Footer, Sider, Content } = Layout;
 const { confirm } = Modal;
+const fileExtension = ".html";
 
 const cleanFileName = (name: string) => {
-  if (name.endsWith(".html")) name = name.substring(0, name.length - 3);
+  if (name.endsWith(fileExtension))
+    name = name.substring(0, name.length - fileExtension.length);
   name = name.replace(/-/g, " ");
-  return name
-    .replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1))
-    .substring(20);
+  return name.substring(20).trim();
+};
+const cleanDateTime = (name: string) => {
+  return new Date(name.substring(0, 20)).toLocaleString();
 };
 
 const safeTwoDigitValue = (value: number) => {
@@ -128,7 +131,7 @@ export default () => {
     const filePath = `${nowDateHelper()} ${newFileName.replace(
       / /g,
       "-"
-    )}.html`;
+    )}${fileExtension}`;
     try {
       await (
         await fetch(`/api/update/?path=${filePath}`, {
@@ -182,7 +185,7 @@ export default () => {
     const newFilePath = `${nowDateHelper()} ${renameFileName.replace(
       / /g,
       "-"
-    )}.html`;
+    )}${fileExtension}`;
     try {
       const result = await (
         await fetch(`/api/rename/?path=${filePath}&newPath=${newFilePath}`, {
@@ -355,7 +358,7 @@ export default () => {
               </Menu.Item>
             ))}
           </Menu>
-          <div style={{ textAlign: "center", marginTop: 20 }}>
+          <div style={{ textAlign: "center", margin: "20px 0" }}>
             <Button
               type="primary"
               shape="circle"
@@ -521,12 +524,20 @@ export default () => {
                 </ul>
               </div>
             ) : (
-              <ContentEditable
-                className="editor"
-                innerRef={contentEditableRef}
-                html={value}
-                onChange={e => setValue(e.target.value)}
-              />
+              <div>
+                <h1>{cleanFileName(pathname.replace("/contents/", ""))}</h1>
+                <div>
+                  <time>
+                    {cleanDateTime(pathname.replace("/contents/", ""))}
+                  </time>
+                </div>
+                <ContentEditable
+                  className="editor"
+                  innerRef={contentEditableRef}
+                  html={value}
+                  onChange={e => setValue(e.target.value)}
+                />
+              </div>
             )}
           </Content>
           <Footer>&copy; Sukriti Kapoor and Anand Chowdhary</Footer>
