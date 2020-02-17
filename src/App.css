@@ -1,1 +1,10 @@
 @import "~antd/dist/antd.css";
+
+.logo a {
+  height: 64px;
+  display: block;
+  color: #fff;
+  text-align: center;
+  line-height: 64px;
+  font-size: 24px;
+}

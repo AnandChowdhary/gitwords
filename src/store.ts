@@ -7,10 +7,13 @@ export interface RootState {
 const appStore = (state: RootState = {}, action: any) => {
   if (action.type === "SET") {
     state.token = action.token;
-  } else if (action.type === "UNSET") {
-    state.token = undefined;
   } else if (action.type === "FILES") {
     state.files = action.files;
+  } else if (action.type === "UNFILES") {
+    state.files = undefined;
+  } else if (action.type === "UNSET") {
+    state.token = undefined;
+    state.files = undefined;
   }
   return state;
 };

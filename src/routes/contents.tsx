@@ -10,6 +10,15 @@ import { Button, Layout, Spin, Menu } from "antd";
 const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 const { Header, Footer, Sider, Content } = Layout;
 
+const cleanFileName = (name: string) => {
+  if (name.endsWith(".md")) name = name.substring(0, name.length - 3);
+  name = name.replace(/-/g, " ");
+  return name.replace(
+    /\w\S*/g,
+    txt => txt.charAt(0).toUpperCase() + txt.substr(1)
+  );
+};
+
 export default () => {
   const dispatch = useDispatch();
   const token = useSelector(state => state.token);
@@ -25,7 +34,7 @@ export default () => {
   useEffect(() => {
     const getContents = async () => {
       setLoading(true);
-      const path = pathname.replace("/contents", "") || "/";
+      let path = pathname.replace("/contents", "") || "/";
       if (path === "/" && files?.length) return setLoading(false);
       const result = await (
         await fetch(`/api/contents/?path=${path}`, {
@@ -38,7 +47,9 @@ export default () => {
       if (Array.isArray(result)) {
         dispatch({
           type: "FILES",
-          files: result
+          files: result.filter(
+            file => !["password.txt", "secret.txt"].includes(file.name)
+          )
         });
       } else {
         setValue(window.atob(result.content));
@@ -53,22 +64,42 @@ export default () => {
         })
       );
   }, [pathname, files, token, dispatch]);
+  const reloadFiles = () => {
+    dispatch({
+      type: "UNFILES"
+    });
+  };
   return (
     <div>
       {!token ? <Redirect to="/" /> : ""}
-      <Layout>
+      <Layout style={{ minHeight: "100vh" }}>
         <Sider width={300}>
+          <div className="logo">
+            <Link to="/contents">Words</Link>
+          </div>
+          <div style={{ textAlign: "center", margin: "20px 0" }}>
+            {loading && !files?.length ? <Spin size="large" /> : ""}
+          </div>
           <Menu theme="dark" mode="inline">
-            {loading && !files?.length ? <Spin /> : ""}
             {(files || []).map(file => (
               <Menu.Item key={file.path}>
-                <Link to={`/contents/${file.path}`}>{file.name}</Link>
+                <Link to={`/contents/${file.path}`}>
+                  {cleanFileName(file.name)}
+                </Link>
               </Menu.Item>
             ))}
           </Menu>
+          <div style={{ textAlign: "center", marginTop: 20 }}>
+            <Button
+              type="primary"
+              shape="circle"
+              icon="reload"
+              onClick={reloadFiles}
+            />
+          </div>
         </Sider>
         <Layout>
-          <Header>
+          <Header style={{ background: "#fff" }}>
             <Button type="primary">New</Button>
             <Button type="default" onClick={logout}>
               Logout
