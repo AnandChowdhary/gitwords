@@ -41,10 +41,14 @@ export default () => {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [newFileName, setNewFileName] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [renameFileName, setRenameFileName] = useState("");
   const [newFileLoading, setNewFileLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [createNew, setCreateNew] = useState(false);
+  const [changePasswordModal, setChangePasswordModal] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
   const [renameModal, setRenameModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [renaming, setRenaming] = useState(false);
@@ -177,6 +181,35 @@ export default () => {
     }
     setRenaming(false);
   };
+  const changePassword = async () => {
+    setChangingPassword(true);
+    try {
+      const result = await (
+        await fetch(`/api/password`, {
+          method: "POST",
+          body: JSON.stringify({
+            currentPassword,
+            newPassword
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ).json();
+      if (result && result.success) {
+        message.success("Password changed");
+        setChangePasswordModal(false);
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      setCurrentPassword("");
+      setNewPassword("");
+      message.error("Unable to change password");
+    }
+    setChangingPassword(false);
+  };
   const deletePost = async () => {
     setDeleting(true);
     const filePath = pathname.replace("/contents/", "");
@@ -255,6 +288,28 @@ export default () => {
           placeholder="New post title"
           value={renameFileName}
           onChange={e => setRenameFileName(e.target.value)}
+        />
+      </Modal>
+      <Modal
+        title="Change Password"
+        visible={changePasswordModal}
+        onOk={changePassword}
+        onCancel={() => setChangePasswordModal(false)}
+        confirmLoading={changingPassword}
+      >
+        <Input
+          prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+          type="password"
+          placeholder="Current password"
+          value={currentPassword}
+          onChange={e => setCurrentPassword(e.target.value)}
+        />
+        <Input
+          prefix={<Icon type="key" style={{ color: "rgba(0,0,0,.25)" }} />}
+          type="password"
+          placeholder="New password"
+          value={newPassword}
+          onChange={e => setNewPassword(e.target.value)}
         />
       </Modal>
       <Layout style={{ minHeight: "100vh" }}>
@@ -349,7 +404,10 @@ export default () => {
             <Dropdown
               overlay={
                 <Menu>
-                  <Menu.Item key="settings-password">
+                  <Menu.Item
+                    key="settings-password"
+                    onClick={() => setChangePasswordModal(true)}
+                  >
                     <Icon type="key" />
                     Change password
                   </Menu.Item>
