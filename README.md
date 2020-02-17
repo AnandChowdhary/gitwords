@@ -1,6 +1,6 @@
-# Gitwords
+[![Gitwords](/public/logo.png)](https://gitwords.now.sh)
 
-A ZIET deployment app (React frontent with serverless Node.js functions) written in TypeScript to store your thoughts.
+A ZIET deployment app (React frontent with serverless Node.js functions) written in TypeScript to store your thoughts in a private GitHub repository.
 
 ## 🌟 Features
 
@@ -8,7 +8,28 @@ A ZIET deployment app (React frontent with serverless Node.js functions) written
 - ⛅ Git-based version control and ZIP backups
 - 🔑 Encrypted file storage (coming soon)
 - 📁 Local backup so you never lose your work (coming soon)
-- 💸 Free and open-source for the world
+- 💸 Free and open-sourced for the world
+
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <img alt="Login" src="https://raw.githubusercontent.com/AnandChowdhary/gitwords/master/public/screenshots/login.png">
+      </td>
+      <td>
+        <img alt="Homepage" src="https://raw.githubusercontent.com/AnandChowdhary/gitwords/master/public/screenshots/home.png">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img alt="Writing a post" src="https://raw.githubusercontent.com/AnandChowdhary/gitwords/master/public/screenshots/writing.png">
+      </td>
+      <td>
+        <img alt="Change password" src="https://raw.githubusercontent.com/AnandChowdhary/gitwords/master/public/screenshots/password.png">
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ## 🔨 Development
 
