@@ -1,24 +1,29 @@
 import React, { useState, FormEvent } from "react";
-import { useLocalStorage } from "../hooks/storage";
 import { Redirect } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 export default () => {
+  const dispatch = useDispatch();
   const [password, setPassword] = useState("");
-  const [token, setToken] = useLocalStorage("token", null);
+  const token = useSelector(state => state);
   const login = async (event: FormEvent) => {
     event.preventDefault();
-    const result: { token: string } = await (
-      await fetch("https://gitwords.now.sh/api/login", {
-        method: "POST",
-        body: JSON.stringify({
-          password
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-    ).json();
-    setToken(result.token);
+    dispatch({
+      type: "SET",
+      token: "anand"
+    });
+    //   const result: { token: string } = await (
+    //     await fetch("https://gitwords.now.sh/api/login", {
+    //       method: "POST",
+    //       body: JSON.stringify({
+    //         password
+    //       }),
+    //       headers: {
+    //         "Content-Type": "application/json"
+    //       }
+    //     })
+    //   ).json();
+    //   setToken(result.token);
   };
   return (
     <div>

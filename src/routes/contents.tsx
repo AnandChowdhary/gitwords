@@ -3,6 +3,7 @@ import { Redirect, useLocation, Link } from "react-router-dom";
 import ReactMde from "react-mde";
 import Showdown from "showdown";
 import "react-mde/lib/styles/css/react-mde-all.css";
+import { useSelector } from "react-redux";
 
 const converter = new Showdown.Converter({
   tables: true,
@@ -12,7 +13,7 @@ const converter = new Showdown.Converter({
 });
 
 export default () => {
-  let token: string | undefined = undefined;
+  const token = useSelector(state => state);
   const [files, setFiles] = useState<
     {
       name: string;
@@ -27,8 +28,6 @@ export default () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const { pathname } = useLocation();
-  const localToken = localStorage.getItem("token");
-  if (localToken) token = JSON.parse(localToken);
   const getContents = async () => {
     setLoading(true);
     const path = pathname.replace("/contents", "") || "";
@@ -53,7 +52,7 @@ export default () => {
     }
   };
   useEffect(() => {
-    getContents();
+    // getContents();
   }, [location]);
   const decode = (text?: string) => (text ? window.atob(text) : "");
   return (
