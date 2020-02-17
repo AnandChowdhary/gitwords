@@ -124,7 +124,35 @@ export default () => {
     } catch (error) {
       setError("We weren't able to create a new file");
     }
+    setNewFileLoading(false);
     setCreateNew(false);
+  };
+
+  const download = async () => {
+    message.info("Creating an archive...");
+    try {
+      const result = await (
+        await fetch(`/api/archive`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ).blob();
+      console.log("RESULT", result);
+      const url = window.URL.createObjectURL(result);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = `words-backup-${new Date().toLocaleDateString()}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.parentNode?.removeChild(a);
+      message.success("Downloading...");
+    } catch (error) {
+      setError("We weren't able to download the archive");
+    }
   };
   const rename = async () => {
     setRenaming(true);
@@ -325,7 +353,7 @@ export default () => {
                     <Icon type="key" />
                     Change password
                   </Menu.Item>
-                  <Menu.Item key="settings-backup">
+                  <Menu.Item key="settings-backup" onClick={download}>
                     <Icon type="download" />
                     Download backup
                   </Menu.Item>
