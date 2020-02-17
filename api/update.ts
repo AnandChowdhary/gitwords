@@ -2,12 +2,13 @@ import { NowRequest, NowResponse } from "@now/node";
 import { github } from "../common/octokit";
 import { OWNER, REPO, UPDATE_MESSAGE } from "../common/config";
 import { verifyToken } from "../common/secrets";
+import { Base64 } from "js-base64";
 
 export default async (req: NowRequest, res: NowResponse) => {
   if (!(await verifyToken(req)))
     return res.status(401).json({ error: "invalid token" });
   const path = req.query.path;
-  const content = Buffer.from(req.body.content).toString("base64");
+  const content = Base64.encode(req.body.content);
   if (typeof path !== "string" || !path) throw new Error("path not provided");
   if (typeof content !== "string") throw new Error("content not provided");
   let sha: string | undefined = undefined;

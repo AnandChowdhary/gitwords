@@ -2,10 +2,10 @@ import { github } from "./octokit";
 import { OWNER, REPO, PASSWORD_PATH, SECRET_PATH } from "./config";
 import { verify } from "jsonwebtoken";
 import { NowRequest, NowResponse } from "@now/node";
+import { Base64 } from "js-base64";
 
 const contentToText = (content: string) => {
-  return Buffer.from(content, "base64")
-    .toString("utf8")
+  return Base64.decode(content)
     .replace(/\r?\n|\r/, "")
     .trim();
 };

@@ -100,7 +100,7 @@ export default () => {
           )
         });
       } else {
-        setValue(window.atob(result.content));
+        setValue(result.safeContent);
       }
       setLoading(false);
     };
