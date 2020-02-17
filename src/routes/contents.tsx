@@ -128,6 +128,26 @@ export default () => {
   };
   const rename = async () => {
     setRenaming(true);
+    const filePath = pathname.replace("/contents/", "");
+    const newFilePath = `${renameFileName.replace(/ /g, "-")}.md`;
+    try {
+      const result = await (
+        await fetch(`/api/rename/?path=${filePath}&newPath=${newFilePath}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ).json();
+      if (result) {
+        history.push(`/contents/${newFilePath}`);
+        message.success("Renamed");
+        setRenameModal(false);
+      }
+    } catch (error) {
+      setError("We weren't able to create a new file");
+    }
+    setRenaming(false);
   };
   const deletePost = async () => {
     setDeleting(true);
