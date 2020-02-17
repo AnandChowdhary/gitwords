@@ -15,7 +15,8 @@ import {
   Modal,
   Input,
   Icon,
-  Alert
+  Alert,
+  Dropdown
 } from "antd";
 import ContentEditable from "react-contenteditable";
 
@@ -44,6 +45,7 @@ export default () => {
   const [createNew, setCreateNew] = useState(false);
   const [saving, setSaving] = useState(false);
   const [renaming, setRenaming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const { pathname } = useLocation();
   const contentEditableRef = createRef<HTMLElement>();
   const logout = () => {
@@ -124,6 +126,9 @@ export default () => {
   const rename = async () => {
     setRenaming(true);
   };
+  const deletePost = async () => {
+    setDeleting(true);
+  };
   const save = async () => {
     setSaving(true);
     const filePath = pathname.replace("/contents/", "");
@@ -199,25 +204,67 @@ export default () => {
           </div>
         </Sider>
         <Layout>
-          <Header style={{ background: "#fff" }}>
+          <Header
+            style={{
+              background: "#fff",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}
+          >
             <Button type="primary" onClick={() => setCreateNew(true)}>
               New
             </Button>
-            <Button type="default" onClick={logout}>
-              Logout
-            </Button>
             {(pathname.replace("/contents", "") || "/") !== "/" ? (
               <span>
-                <Button type="default" loading={renaming} onClick={rename}>
-                  Rename
-                </Button>
+                <Dropdown
+                  overlay={
+                    <Menu>
+                      <Menu.Item key="post-rename" onClick={rename}>
+                        <Icon type="edit" />
+                        Rename
+                      </Menu.Item>
+                      <Menu.Item key="post-delete" onClick={deletePost}>
+                        <Icon type="delete" />
+                        Delete
+                      </Menu.Item>
+                    </Menu>
+                  }
+                >
+                  <Button style={{ marginRight: 20 }}>
+                    Edit post <Icon type="down" />
+                  </Button>
+                </Dropdown>
                 <Button type="primary" loading={saving} onClick={save}>
-                  Save
+                  <Icon type="save" />
+                  Save post
                 </Button>
               </span>
             ) : (
               ""
             )}
+            <Dropdown
+              overlay={
+                <Menu>
+                  <Menu.Item key="settings-password">
+                    <Icon type="key" />
+                    Change password
+                  </Menu.Item>
+                  <Menu.Item key="settings-backup">
+                    <Icon type="download" />
+                    Download backup
+                  </Menu.Item>
+                  <Menu.Item key="settings-logout" onClick={logout}>
+                    <Icon type="user" />
+                    Logout
+                  </Menu.Item>
+                </Menu>
+              }
+            >
+              <Button>
+                Settings <Icon type="down" />
+              </Button>
+            </Dropdown>
           </Header>
           <Content style={{ width: "720px", margin: "40px auto" }}>
             {loading ? (
@@ -242,7 +289,7 @@ export default () => {
               />
             )}
           </Content>
-          <Footer>Footer</Footer>
+          <Footer>&copy; Sukriti Kapoor and Anand Chowdhary</Footer>
         </Layout>
       </Layout>
     </div>
