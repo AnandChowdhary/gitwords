@@ -36,7 +36,7 @@ const cleanDateTime = (name: string) => {
 };
 
 const safeTwoDigitValue = (value: number) => {
-  if (value > 9) value.toString();
+  if (value > 9) return value.toString();
   return `0${value}`;
 };
 
