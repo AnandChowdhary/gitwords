@@ -31,7 +31,7 @@
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "antd": "^3.26.11",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "js-base64": "^2.5.2",
     "jsonwebtoken": "^8.5.1",
     "react": "^16.12.0",
